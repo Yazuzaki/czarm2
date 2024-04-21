@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Czarm's Roulette Wheel of Happiness</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: purple;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        #canvas {
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        #spin,
+        #hide-button,
+        #show-button {
+            background-color: rgba(128, 0, 128, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #spin:hover,
+        #hide-button:hover,
+        #show-button:hover {
+            background-color: rgba(128, 0, 128, 0.7);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            animation-name: modalopen;
+            animation-duration: 0.4s;
+        }
+
+        @keyframes modalopen {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #text-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100vh;
+            padding: 10px;
+        }
+
+        #text-container p {
+            margin: 0;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 90%;
+                /* Adjust the width for smaller screens */
+                margin: 15% auto;
+            }
+        }
+
+        .nav {
+            margin-top: -65px;
+            height: 50px;
+            width: 100%;
+            background-color: #000000;
+            position: relative;
+        }
+
+        .nav>.nav-header {
+            display: inline;
+        }
+
+        .nav>.nav-header>.nav-title {
+            display: inline-block;
+            font-size: 22px;
+            color: #fff;
+            padding: 10px 10px 10px 10px;
+        }
+
+        .nav>.nav-btn {
+            display: none;
+        }
+
+        .nav>.nav-links {
+            display: inline;
+            float: right;
+            font-size: 18px;
+        }
+
+        .nav>.nav-links>a {
+            display: inline-block;
+            padding: 13px 10px 13px 10px;
+            text-decoration: none;
+            color: #efefef;
+        }
+
+        .nav>.nav-links>a:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .nav>#nav-check {
+            display: none;
+        }
+
+        @media (max-width:600px) {
+            .nav>.nav-btn {
+                display: inline-block;
+                position: absolute;
+                right: 0px;
+                top: 0px;
+            }
+
+            .nav>.nav-btn>label {
+                display: inline-block;
+                width: 50px;
+                height: 50px;
+                padding: 13px;
+            }
+
+            .nav>.nav-btn>label:hover,
+            .nav #nav-check:checked~.nav-btn>label {
+                background-color: rgba(0, 0, 0, 0.3);
+            }
+
+            .nav>.nav-btn>label>span {
+                display: block;
+                width: 25px;
+                height: 10px;
+                border-top: 2px solid #eee;
+            }
+
+            .nav>.nav-links {
+                position: absolute;
+                display: block;
+                width: 100%;
+                background-color: #333;
+                height: 0px;
+                transition: all 0.3s ease-in;
+                overflow-y: hidden;
+                top: 50px;
+                left: 0px;
+            }
+
+            .nav>.nav-links>a {
+                display: block;
+                width: 100%;
+            }
+
+            .nav>#nav-check:not(:checked)~.nav-links {
+                height: 0px;
+            }
+
+            .nav>#nav-check:checked~.nav-links {
+                height: calc(100vh - 50px);
+                overflow-y: auto;
+            }
+            
+        }
+    </style>
+</head>
+<br>
+<div class="nav">
+    <input type="checkbox" id="nav-check">
+    <div class="nav-header">
+        <div class="nav-title">
+            Mahal
+        </div>
+    </div>
+    <div class="nav-btn">
+        <label for="nav-check">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+    </div>
+
+    <div class="nav-links">
+        <a href="gallery.html" target="">Gallery</a>
+        <a href="index2.html" target="">Mahallll</a>
+    </div>
+</div>
+
+<body>
+
+    <h2>Czarm's Wheel of Happiness - September 5, 2023</h2>
+
+    <div id="text-container">
+        <p>Ginawa ko to kasi i wanna be there for you as much as possible even through ganito lang na you'll always know
+            na you are special to me even if i'm busy or sleeping or doing something na di makakareply agad <br><b>Spin
+                the wheel for a surprise hehehe I love you so much czarm❤️ </b>
+        </p>
+        <button id="hide-button">Hide Text</button>
+    </div>
+
+    <div class="button-container">
+        <button id="show-button">Show Text</button>
+        <input type="button" value="Spin" id="spin" />
+    </div>
+
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <div id="modal-content-container">
+                <!-- Content from the selected option will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var options = [
+            { text: "masayang masaya ako dito HAHAHHAHA i'll treasure this memory of us forever lalo na nung nandun tayooo sa may daan naguusap", image: "IMG_20230826_193431.jpg" },
+            { text: "i love you mahal i really dooo", image: "" },
+            { text: "You are the highlight of my everyday czarm", image: "" },
+            { text: "i love you so muchh", image: "" },
+            { text: "you mean the world to me", image: "" },
+            { text: "i wanna grow old with you and chill sa rocking chair", image: "" },
+            { text: "G pa po kayo valo? HAHAHA my first message", image: "" },
+            { text: "i look forward to the memories that we will make together", image: "" },
+            { text: "i love you and respect you and appreciate you mahallll", image: "" },
+            { text: "hehehehe", image: "gradpat.jpg" },
+            { text: "first ever meet natin na medyo kabado pa ako pero nawala yung kaba the moment i saw you medyo hiya pa pero normal lang naman yun.", image: "czarmmmmm.jpg" },
+            { text: "diiii ngaaa magkalandiii turing ko sayooooo T_T i loveeee youuuuu mahaalll", image: "" },
+            { text: "I'm always here for youuu mahalll", image: "" },
+            { text: "mwaaaaaaaa", image: "gradpat.jpg" },
+            { text: "i love you mahal hugggggg", image: "1day.jpg" },
+            { text: "Your presence eliminates every doubt that i have mwaaaaaa", image: "czarm.jpg" },
+            { text: "sabi mo na i was one of the reasons behind that smile. so i will continue being the reason why you smile for the rest of your life", image: "gradpiczarm.jpg" },
+            { text: "mahal i will always stay at your side through goodtimes and bad", image: "" },
+            { text: "i loveee you sooo muchh", image: "" },
+            { text: "hehehe first selfie update ni mahal <3 ", image: "selfieup.jpg" },
+            { text: "you make me soooo happy mahal", image: "373468049_783145310276425_3110022799443798658_n.jpg" },
+            { text: "our first date outside hehehe", image: "370597093_826654748993536_8735515232313349597_n.jpg" },
+            { text: "definition of happiness <3 spending time with you", image: "370644244_208683625530975_6290488083825812449_n.jpg" },
+            { text: "i'll always remember this moment na inask kita maging girlfriend ko and you said yes one of the best and happiest memories i have with you so far", image: "371783862_1271044530268008_3534421685126660033_n.jpg" },
+            { text: "i am grateful to have youu mahaalll", image: "372265233_795975165557560_2089930356038643605_n.jpg" },
+            { text: "KISSS MWAAAAA", image: "371093518_1285462962156694_8484029707612655594_n.jpg" },
+            { text: "the only hand that i will hold for the rest of my life mwaaaaaa", image: "370598580_322190526923852_7381969964747089665_n.jpg" },
+            { text: "hehehe bingsuuu with mahal nanginiglo naaaaa tayo jan HAHAHHAHA", image: "370605467_977432416706302_3541406121298249559_n.jpg" },
+            { text: "i will always be yours mahal", image: "371788341_998750001323909_2660369852822287663_n.jpg" },
+            { text: "your fav pic of us hehehe i hope na i can make you smile like this when you are down", image: "371750969_1025122402000735_5721658323396711778_n.jpg" },
+            { text: "i am proud of you mahal", image: "" },
+            { text: "I love you to the moon and back again.", image: "" },
+            { text: "I'd do anything to make you smile like this", image: "370595945_6819800038083624_3218125223078690493_n.jpg" },
+            { text: "I love you with all my heart mahal", image: "" },
+            { text: "mahal thank you for watching over me when i am asleep sorry di kita nasabayan nito ng sleep", image: "sss.jpg" },
+            { text: "First vape purchase na nakihipak din ako HAHAHAHA", image: "IMG_20230822_083138.jpg" },
+            { text: "i love you mahal even in your with your flaws", image: "" },
+            { text: "", image: "IMG_20230828_034732.jpg" },
+            { text: "Hugggggggg", image: "IMG_20230828_034546.jpg" },
+            { text: "i will always respect your time and your busy days mahal", image: "355209082_806975727398824_3787614844637048095_n.png" },
+            { text: "I will always cherish you mahal", image: "" },
+            { text: "My heart is yours forever mahal", image: "" },
+            { text: "you are may tahanan mahal i love you", image: "" },
+            { text: "I trust and love you mahal with every cell in my body", image: "" },
+            { text: "I look forward to making more fond memories with you mahal ", image: "" },
+            { text: "Loving you is one of the best decisions i have ever made mahal", image: "" },
+            { text: "Mahal you are one of the most important person in my life", image: "" },
+            { text: "You are my Pahinga mahal", image: "" },
+            { text: "a wild yaw appears she makes your sadness go awayyyyyy", image: "Yaw.jpg" },
+            { text: "me drowning in all of the love that you give me", image: "received_273707457608404.jpg" },
+            { text: "out of the 258k members of that sub reddit i am glad na ikaw ang nakilala ko and na fall inlove with", image: "" },
+            { text: "A wild oreo appears your happiness goes up instantly", image: "Screenshot_20230722_033608_com.android.gallery3d.jpg" },
+            { text: "Me training at the gym to fight your sad hours", image: "IMG_20230726_150934.jpg" },
+            { text: "You are Worth it mahal", image: "" },
+            { text: "Staying up all night with you will always be the best puyats ever", image: "" },
+            { text: "I will chase the monsters away for you mahal", image: "" },
+            { text: "remember mahal i am always here for you", image: "" },
+            { text: "I will love you always czarm", image: "" },
+            { text: "Two less lonely people in the world And it's gonna be fine Out of all the people in the world I just can't believe you're mine", image: "" },
+            { text: "I believe in you mahal you are the strongest woman i've met", image: "" },
+            { text: "I will always support you mahal", image: "" },
+            { text: "you are the love of my life mahal", image: "" },
+            { text: "you are my happy pill mahal", image: "" },
+            { text: "i choose you mahal to be the love of my life and i will always choose you without a shadow of a doubt", image: "" },
+            { text: "one of my goals in life is to grow with you i cause di ka pang short term i love you", image: "" },
+            { text: "the feeling you give me isn't replaceable by anyone", image: "" },
+            { text: "mahal i'm not going to say i miss you but i will say goodbyes are only for those who love with their eyes because for those who love with their heart and soul there is no such thing as separation", image: "" },
+            { text: "mahal you are the best duo ever hehehe mapa valo ml or wildrift", image: "" },
+            { text: "#Roadto12hours", image: "" },
+            { text: "i am always thinking about you mahal", image: "" },
+            { text: "i wish na naging kinder yung mundong ito sayo na di ka nya binigyan ng mga traumas hehehe maybe that's why i'm here to bring you happiness to make up for all those traumas that you have endured in the past mahal i love you and i promise to be the man that deserves you", image: "" },
+            { text: "Mahal i will always look back at this moment nung bagong kilala palang tayo na i can say na you were there for me since day one kahit na wala pa akong maooffer sayo nun you still choose to love me and for that i am eternally grateful you are a major part of my success in life and i hope na will be part of yours aswell i love you so much mahal words are not enough to express this feeling i have for you ps don't worry mahal okieee lang kung di tuloy ayala mall there is always next time 9-9-2023" }
+
+
+
+        ];
+        var startAngle = 0;
+        var arc = Math.PI / (options.length / 2);
+        var spinTimeout = null;
+        var spinArcStart = 10;
+        var spinTime = 0;
+        var spinTimeTotal = 0;
+        var ctx;
+        var currentVisibleOption = null;
+        var selectedOptions = [];
+
+
+        document.getElementById("spin").addEventListener("click", spin);
+
+        function byte2Hex(n) {
+            var nybHexString = "0123456789ABCDEF";
+            return String(nybHexString.substr((n >> 4) & 0x0F, 1)) + nybHexString.substr(n & 0x0F, 1);
+        }
+
+        function RGB2Color(r, g, b) {
+            return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
+        }
+
+        function getColor(item, maxitem) {
+            var phase = 0;
+            var center = 128;
+            var width = 127;
+            var frequency = Math.PI * 2 / maxitem;
+
+            red = Math.sin(frequency * item + 2 + phase) * width + center;
+            green = Math.sin(frequency * item + 0 + phase) * width + center;
+            blue = Math.sin(frequency * item + 4 + phase) * width + center;
+
+            return RGB2Color(red, green, blue);
+        }
+
+        function drawRouletteWheel() {
+            var canvas = document.getElementById("canvas");
+            if (canvas.getContext) {
+                var outsideRadius = 200;
+                var textRadius = 160;
+                var insideRadius = 125;
+
+                ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, 500, 500);
+
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = 2;
+
+                ctx.font = 'bold 12px Helvetica, Arial';
+
+                for (var i = 0; i < options.length; i++) {
+                    // Check if the option has already been selected
+                    if (selectedOptions.indexOf(options[i]) === -1) {
+                        var angle = startAngle + i * arc;
+                        ctx.fillStyle = getColor(i, options.length);
+
+                        ctx.beginPath();
+                        ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
+                        ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
+                        ctx.stroke();
+                        ctx.fill();
+                    }
+                }
+
+                // Arrow
+                ctx.fillStyle = "black";
+                ctx.beginPath();
+                ctx.moveTo(250 - 4, 250 - (outsideRadius + 5));
+                ctx.lineTo(250 + 4, 250 - (outsideRadius + 5));
+                ctx.lineTo(250 + 4, 250 - (outsideRadius - 5));
+                ctx.lineTo(250 + 9, 250 - (outsideRadius - 5));
+                ctx.lineTo(250 + 0, 250 - (outsideRadius - 13));
+                ctx.lineTo(250 - 9, 250 - (outsideRadius - 5));
+                ctx.lineTo(250 - 4, 250 - (outsideRadius - 5));
+                ctx.lineTo(250 - 4, 250 - (outsideRadius + 5));
+                ctx.fill();
+            }
+        }
+
+
+        function spin() {
+            if (currentVisibleOption) {
+                hideOptionInModal();
+            }
+            spinAngleStart = Math.random() * 10 + 10;
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 3 + 4 * 1000;
+            rotateWheel();
+        }
+
+        function rotateWheel() {
+            spinTime += 30;
+            if (spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+            var spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+            startAngle += (spinAngle * Math.PI / 180);
+            drawRouletteWheel();
+            spinTimeout = setTimeout(rotateWheel, 30);
+        }
+
+        function stopRotateWheel() {
+            clearTimeout(spinTimeout);
+            var degrees = startAngle * 180 / Math.PI + 90;
+            var arcd = arc * 180 / Math.PI;
+            var index = Math.floor((360 - degrees % 360) / arcd);
+            ctx.save();
+            ctx.font = 'bold 30px Helvetica, Arial';
+            var selectedOption = options[index];
+
+            // Display the selected option in the modal
+            showOptionInModal(selectedOption);
+            ctx.restore();
+        }
+
+        function easeOut(t, b, c, d) {
+            var ts = (t /= d) * t;
+            var tc = ts * t;
+            return b + c * (tc + -3 * ts + 3 * t);
+        }
+
+        function showOptionInModal(selectedOption) {
+            var modal = document.getElementById("myModal");
+            var modalContent = document.getElementById("modal-content-container");
+            modal.style.display = "block";
+            selectedOptions.push(selectedOption);
+            // Clear previous content
+            modalContent.innerHTML = "";
+
+            // Create and append the content to the modal
+            var optionElement = document.createElement("div");
+            var textElement = document.createElement("p");
+
+            if (selectedOption.image) {
+                // If the option has an image, display it
+                var imageElement = document.createElement("img");
+                imageElement.src = selectedOption.image;
+                modalContent.appendChild(imageElement);
+                textElement.textContent = selectedOption.text;
+            } else {
+                // If there's no image, display only the text
+                textElement.textContent = selectedOption.text;
+            }
+
+            optionElement.appendChild(textElement);
+            modalContent.appendChild(optionElement);
+
+            // Add a close button to the modal
+            var closeButton = document.getElementById("closeModal");
+            closeButton.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            // Store the current visible option
+            currentVisibleOption = selectedOption;
+        }
+
+        function hideOptionInModal() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            currentVisibleOption = null;
+        }
+
+        // Initialize the wheel
+        drawRouletteWheel();
+        // JavaScript code to hide the text container when the button is clicked
+        document.getElementById("hide-button").addEventListener("click", function () {
+            var textContainer = document.getElementById("text-container");
+            textContainer.style.display = "none";
+        });
+        document.getElementById("show-button").addEventListener("click", function () {
+            var textContainer = document.getElementById("text-container");
+            textContainer.style.display = "block";
+        });
+
+    </script>
+</body>
+
+</html>
