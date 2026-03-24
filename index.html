@@ -1,535 +1,683 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Czarm's Roulette Wheel of Happiness</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: purple;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Czarm's Wheel of Happiness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
-        h2 {
-            margin-bottom: 20px;
-        }
+  <style>
+    :root {
+      --bg: #0d0a14;
+      --surface: #160f24;
+      --surface2: #1f1535;
+      --accent: #c084fc;
+      --accent2: #f0abfc;
+      --gold: #fbbf24;
+      --text: #f3e8ff;
+      --text-muted: #a78bca;
+      --border: rgba(192, 132, 252, 0.2);
+      --glow: rgba(192, 132, 252, 0.3);
+      --radius: 16px;
+    }
 
-        #canvas {
-            margin-bottom: 20px;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
 
-        #spin,
-        #hide-button,
-        #show-button {
-            background-color: rgba(128, 0, 128, 0.5);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+    /* ── Background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(139,92,246,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 85%, rgba(192,132,252,0.12) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        #spin:hover,
-        #hide-button:hover,
-        #show-button:hover {
-            background-color: rgba(128, 0, 128, 0.7);
-        }
+    /* ── Nav ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      background: rgba(13, 10, 20, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 56px;
+    }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--accent2);
+      letter-spacing: 0.02em;
+    }
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            animation-name: modalopen;
-            animation-duration: 0.4s;
-        }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--accent2);
+      background: rgba(192,132,252,0.1);
+    }
 
-        @keyframes modalopen {
-            from {
-                opacity: 0
-            }
+    /* hamburger */
+    #nav-check { display: none; }
+    .nav-btn { display: none; cursor: pointer; }
+    .nav-btn span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text-muted); border-radius: 2px; margin: 5px 0;
+      transition: 0.3s;
+    }
 
-            to {
-                opacity: 1
-            }
-        }
+    @media (max-width: 600px) {
+      .nav-btn { display: flex; flex-direction: column; justify-content: center; }
+      .nav-links {
+        position: absolute; top: 56px; left: 0; width: 100%;
+        background: rgba(13,10,20,0.97);
+        flex-direction: column; gap: 0;
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.3s ease;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links a { padding: 14px 28px; border-radius: 0; }
+      #nav-check:checked ~ .nav-links { max-height: 300px; }
+    }
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      gap: 28px;
+    }
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+    /* ── Hero header ── */
+    .hero {
+      text-align: center;
+      max-width: 540px;
+    }
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #f3e8ff 0%, var(--accent2) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-date {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
 
-        .modal-content img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
+    /* ── Message card ── */
+    .message-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      line-height: 1.7;
+      font-size: 15px;
+      color: var(--text-muted);
+      display: none;
+      animation: fadeSlideIn 0.5s ease;
+    }
+    .message-card strong {
+      display: block;
+      margin-top: 12px;
+      font-size: 16px;
+      color: var(--accent2);
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+    .message-card.visible { display: block; }
 
-        #text-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            height: 100vh;
-            padding: 10px;
-        }
+    /* ── Wheel container ── */
+    .wheel-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
 
-        #text-container p {
-            margin: 0;
-            padding: 10px;
-        }
+    .wheel-frame {
+      position: relative;
+      width: 380px;
+      height: 380px;
+    }
 
-        @media (max-width: 768px) {
-            .modal-content {
-                width: 90%;
-                /* Adjust the width for smaller screens */
-                margin: 15% auto;
-            }
-        }
+    /* glow ring */
+    .wheel-frame::before {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
 
-        .nav {
-            margin-top: -65px;
-            height: 50px;
-            width: 100%;
-            background-color: #000000;
-            position: relative;
-        }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
 
-        .nav>.nav-header {
-            display: inline;
-        }
+    #canvas {
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      display: block;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 0 24px rgba(192,132,252,0.25));
+    }
 
-        .nav>.nav-header>.nav-title {
-            display: inline-block;
-            font-size: 22px;
-            color: #fff;
-            padding: 10px 10px 10px 10px;
-        }
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-        .nav>.nav-btn {
-            display: none;
-        }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.02em;
+    }
 
-        .nav>.nav-links {
-            display: inline;
-            float: right;
-            font-size: 18px;
-        }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 0 0 0 rgba(168,85,247,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(168,85,247,0.4);
+    }
+    .btn-primary:active { transform: translateY(0); }
 
-        .nav>.nav-links>a {
-            display: inline-block;
-            padding: 13px 10px 13px 10px;
-            text-decoration: none;
-            color: #efefef;
-        }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover {
+      background: rgba(192,132,252,0.08);
+      color: var(--accent2);
+      border-color: rgba(192,132,252,0.3);
+    }
 
-        .nav>.nav-links>a:hover {
-            background-color: rgba(0, 0, 0, 0.3);
-        }
+    /* ── Spin button (big) ── */
+    .spin-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #c084fc);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 0 0 4px rgba(168,85,247,0.2), 0 8px 32px rgba(124,58,237,0.5);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    .spin-btn:hover {
+      box-shadow: 0 0 0 8px rgba(168,85,247,0.25), 0 12px 40px rgba(124,58,237,0.6);
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+    .spin-btn:active { transform: translate(-50%, -50%) scale(0.97); }
+    .spin-btn.spinning { animation: spinPulse 0.6s ease-in-out infinite alternate; }
+    @keyframes spinPulse {
+      from { box-shadow: 0 0 0 4px rgba(168,85,247,0.2), 0 8px 32px rgba(124,58,237,0.5); }
+      to   { box-shadow: 0 0 0 14px rgba(168,85,247,0.1), 0 12px 48px rgba(124,58,237,0.7); }
+    }
 
-        .nav>#nav-check {
-            display: none;
-        }
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
 
-        @media (max-width:600px) {
-            .nav>.nav-btn {
-                display: inline-block;
-                position: absolute;
-                right: 0px;
-                top: 0px;
-            }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 480px;
+      width: 100%;
+      position: relative;
+      animation: fadeSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,132,252,0.1);
+    }
 
-            .nav>.nav-btn>label {
-                display: inline-block;
-                width: 50px;
-                height: 50px;
-                padding: 13px;
-            }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
-            .nav>.nav-btn>label:hover,
-            .nav #nav-check:checked~.nav-btn>label {
-                background-color: rgba(0, 0, 0, 0.3);
-            }
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 18px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--accent2); }
 
-            .nav>.nav-btn>label>span {
-                display: block;
-                width: 25px;
-                height: 10px;
-                border-top: 2px solid #eee;
-            }
+    .modal-heart {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
 
-            .nav>.nav-links {
-                position: absolute;
-                display: block;
-                width: 100%;
-                background-color: #333;
-                height: 0px;
-                transition: all 0.3s ease-in;
-                overflow-y: hidden;
-                top: 50px;
-                left: 0px;
-            }
+    .modal-img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      object-fit: cover;
+      max-height: 300px;
+      border: 1px solid var(--border);
+    }
 
-            .nav>.nav-links>a {
-                display: block;
-                width: 100%;
-            }
+    .modal-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--text);
+      text-align: center;
+    }
 
-            .nav>#nav-check:not(:checked)~.nav-links {
-                height: 0px;
-            }
+    .modal-footer {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
 
-            .nav>#nav-check:checked~.nav-links {
-                height: calc(100vh - 50px);
-                overflow-y: auto;
-            }
-            
-        }
-    </style>
+    /* ── Spin counter ── */
+    .spin-counter {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .spin-counter span { color: var(--accent); font-weight: 600; }
+  </style>
 </head>
-<br>
-<div class="nav">
-    <input type="checkbox" id="nav-check">
-    <div class="nav-header">
-        <div class="nav-title">
-            Mahal
-        </div>
-    </div>
-    <div class="nav-btn">
-        <label for="nav-check">
-            <span></span>
-            <span></span>
-            <span></span>
-        </label>
-    </div>
-
-    <div class="nav-links">
-        <a href="gallery.html" target="">Gallery</a>
-        <a href="index2.html" target="">Mahallll</a>
-    </div>
-</div>
-
 <body>
 
-    <h2>Czarm's Wheel of Happiness - September 5, 2023</h2>
+<!-- Nav -->
+<nav>
+  <div class="nav-brand">Mahal ♡</div>
+  <input type="checkbox" id="nav-check" />
+  <label class="nav-btn" for="nav-check">
+    <span></span><span></span><span></span>
+  </label>
+  <div class="nav-links">
+    <a href="gallery.html">Gallery</a>
+  </div>
+</nav>
 
-    <div id="text-container">
-        <p>Ginawa ko to kasi i wanna be there for you as much as possible even through ganito lang na you'll always know
-            na you are special to me even if i'm busy or sleeping or doing something na di makakareply agad <br><b>Spin
-                the wheel for a surprise hehehe I love you so much czarm❤️ </b>
-        </p>
-        <button id="hide-button">Hide Text</button>
+<main>
+
+  <!-- Header -->
+  <div class="hero">
+    <div class="hero-eyebrow">✦ A little something for you ✦</div>
+    <h1>Czarm's Wheel of Happiness</h1>
+    <div class="hero-date">September 5, 2023</div>
+  </div>
+
+  <!-- Message card -->
+  <div class="message-card" id="message-card">
+    Ginawa ko to kasi i wanna be there for you as much as possible even through ganito lang na you'll always know na you are special to me even if i'm busy or sleeping or doing something na di makakareply agad.
+    <strong>Spin the wheel for a surprise — I love you so much, Czarm ❤️</strong>
+    <div style="margin-top:16px;">
+      <button class="btn btn-ghost" id="hide-btn" style="font-size:13px;">Hide message</button>
     </div>
+  </div>
 
-    <div class="button-container">
-        <button id="show-button">Show Text</button>
-        <input type="button" value="Spin" id="spin" />
+  <!-- Controls top -->
+  <div class="controls">
+    <button class="btn btn-ghost" id="show-btn">Show message</button>
+  </div>
+
+  <!-- Wheel -->
+  <div class="wheel-wrapper">
+    <div class="wheel-frame">
+      <canvas id="canvas" width="500" height="500"></canvas>
+      <button class="spin-btn" id="spin-btn" title="Spin!">▶</button>
     </div>
+    <div class="spin-counter">Spins: <span id="spin-count">0</span></div>
+  </div>
 
-    <canvas id="canvas" width="500" height="500"></canvas>
+</main>
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <div id="modal-content-container">
-                <!-- Content from the selected option will be displayed here -->
-            </div>
-        </div>
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-heart">💜</div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-spin-again">Spin again ↻</button>
     </div>
+  </div>
+</div>
 
-    <script>
-        var options = [
-            { text: "masayang masaya ako dito HAHAHHAHA i'll treasure this memory of us forever lalo na nung nandun tayooo sa may daan naguusap", image: "IMG_20230826_193431.jpg" },
-            { text: "i love you mahal i really dooo", image: "" },
-            { text: "You are the highlight of my everyday czarm", image: "" },
-            { text: "i love you so muchh", image: "" },
-            { text: "you mean the world to me", image: "" },
-            { text: "i wanna grow old with you and chill sa rocking chair", image: "" },
-            { text: "G pa po kayo valo? HAHAHA my first message", image: "" },
-            { text: "i look forward to the memories that we will make together", image: "" },
-            { text: "i love you and respect you and appreciate you mahallll", image: "" },
-            { text: "hehehehe", image: "gradpat.jpg" },
-            { text: "first ever meet natin na medyo kabado pa ako pero nawala yung kaba the moment i saw you medyo hiya pa pero normal lang naman yun.", image: "czarmmmmm.jpg" },
-            { text: "diiii ngaaa magkalandiii turing ko sayooooo T_T i loveeee youuuuu mahaalll", image: "" },
-            { text: "I'm always here for youuu mahalll", image: "" },
-            { text: "mwaaaaaaaa", image: "gradpat.jpg" },
-            { text: "i love you mahal hugggggg", image: "1day.jpg" },
-            { text: "Your presence eliminates every doubt that i have mwaaaaaa", image: "czarm.jpg" },
-            { text: "sabi mo na i was one of the reasons behind that smile. so i will continue being the reason why you smile for the rest of your life", image: "gradpiczarm.jpg" },
-            { text: "mahal i will always stay at your side through goodtimes and bad", image: "" },
-            { text: "i loveee you sooo muchh", image: "" },
-            { text: "hehehe first selfie update ni mahal <3 ", image: "selfieup.jpg" },
-            { text: "you make me soooo happy mahal", image: "373468049_783145310276425_3110022799443798658_n.jpg" },
-            { text: "our first date outside hehehe", image: "370597093_826654748993536_8735515232313349597_n.jpg" },
-            { text: "definition of happiness <3 spending time with you", image: "370644244_208683625530975_6290488083825812449_n.jpg" },
-            { text: "i'll always remember this moment na inask kita maging girlfriend ko and you said yes one of the best and happiest memories i have with you so far", image: "371783862_1271044530268008_3534421685126660033_n.jpg" },
-            { text: "i am grateful to have youu mahaalll", image: "372265233_795975165557560_2089930356038643605_n.jpg" },
-            { text: "KISSS MWAAAAA", image: "371093518_1285462962156694_8484029707612655594_n.jpg" },
-            { text: "the only hand that i will hold for the rest of my life mwaaaaaa", image: "370598580_322190526923852_7381969964747089665_n.jpg" },
-            { text: "hehehe bingsuuu with mahal nanginiglo naaaaa tayo jan HAHAHHAHA", image: "370605467_977432416706302_3541406121298249559_n.jpg" },
-            { text: "i will always be yours mahal", image: "371788341_998750001323909_2660369852822287663_n.jpg" },
-            { text: "your fav pic of us hehehe i hope na i can make you smile like this when you are down", image: "371750969_1025122402000735_5721658323396711778_n.jpg" },
-            { text: "i am proud of you mahal", image: "" },
-            { text: "I love you to the moon and back again.", image: "" },
-            { text: "I'd do anything to make you smile like this", image: "370595945_6819800038083624_3218125223078690493_n.jpg" },
-            { text: "I love you with all my heart mahal", image: "" },
-            { text: "mahal thank you for watching over me when i am asleep sorry di kita nasabayan nito ng sleep", image: "sss.jpg" },
-            { text: "First vape purchase na nakihipak din ako HAHAHAHA", image: "IMG_20230822_083138.jpg" },
-            { text: "i love you mahal even in your with your flaws", image: "" },
-            { text: "", image: "IMG_20230828_034732.jpg" },
-            { text: "Hugggggggg", image: "IMG_20230828_034546.jpg" },
-            { text: "i will always respect your time and your busy days mahal", image: "355209082_806975727398824_3787614844637048095_n.png" },
-            { text: "I will always cherish you mahal", image: "" },
-            { text: "My heart is yours forever mahal", image: "" },
-            { text: "you are may tahanan mahal i love you", image: "" },
-            { text: "I trust and love you mahal with every cell in my body", image: "" },
-            { text: "I look forward to making more fond memories with you mahal ", image: "" },
-            { text: "Loving you is one of the best decisions i have ever made mahal", image: "" },
-            { text: "Mahal you are one of the most important person in my life", image: "" },
-            { text: "You are my Pahinga mahal", image: "" },
-            { text: "a wild yaw appears she makes your sadness go awayyyyyy", image: "Yaw.jpg" },
-            { text: "me drowning in all of the love that you give me", image: "received_273707457608404.jpg" },
-            { text: "out of the 258k members of that sub reddit i am glad na ikaw ang nakilala ko and na fall inlove with", image: "" },
-            { text: "A wild oreo appears your happiness goes up instantly", image: "Screenshot_20230722_033608_com.android.gallery3d.jpg" },
-            { text: "Me training at the gym to fight your sad hours", image: "IMG_20230726_150934.jpg" },
-            { text: "You are Worth it mahal", image: "" },
-            { text: "Staying up all night with you will always be the best puyats ever", image: "" },
-            { text: "I will chase the monsters away for you mahal", image: "" },
-            { text: "remember mahal i am always here for you", image: "" },
-            { text: "I will love you always czarm", image: "" },
-            { text: "Two less lonely people in the world And it's gonna be fine Out of all the people in the world I just can't believe you're mine", image: "" },
-            { text: "I believe in you mahal you are the strongest woman i've met", image: "" },
-            { text: "I will always support you mahal", image: "" },
-            { text: "you are the love of my life mahal", image: "" },
-            { text: "you are my happy pill mahal", image: "" },
-            { text: "i choose you mahal to be the love of my life and i will always choose you without a shadow of a doubt", image: "" },
-            { text: "one of my goals in life is to grow with you i cause di ka pang short term i love you", image: "" },
-            { text: "the feeling you give me isn't replaceable by anyone", image: "" },
-            { text: "mahal i'm not going to say i miss you but i will say goodbyes are only for those who love with their eyes because for those who love with their heart and soul there is no such thing as separation", image: "" },
-            { text: "mahal you are the best duo ever hehehe mapa valo ml or wildrift", image: "" },
-            { text: "#Roadto12hours", image: "" },
-            { text: "i am always thinking about you mahal", image: "" },
-            { text: "i wish na naging kinder yung mundong ito sayo na di ka nya binigyan ng mga traumas hehehe maybe that's why i'm here to bring you happiness to make up for all those traumas that you have endured in the past mahal i love you and i promise to be the man that deserves you", image: "" },
-            { text: "Mahal i will always look back at this moment nung bagong kilala palang tayo na i can say na you were there for me since day one kahit na wala pa akong maooffer sayo nun you still choose to love me and for that i am eternally grateful you are a major part of my success in life and i hope na will be part of yours aswell i love you so much mahal words are not enough to express this feeling i have for you ps don't worry mahal okieee lang kung di tuloy ayala mall there is always next time 9-9-2023" }
+<script>
+  /* ── Data ── */
+  const options = [
+    { text: "masayang masaya ako dito HAHAHHAHA i'll treasure this memory of us forever lalo na nung nandun tayooo sa may daan naguusap", image: "IMG_20230826_193431.jpg" },
+    { text: "i love you mahal i really dooo", image: "" },
+    { text: "You are the highlight of my everyday czarm", image: "" },
+    { text: "i love you so muchh", image: "" },
+    { text: "you mean the world to me", image: "" },
+    { text: "i wanna grow old with you and chill sa rocking chair", image: "" },
+    { text: "G pa po kayo valo? HAHAHA my first message", image: "" },
+    { text: "i look forward to the memories that we will make together", image: "" },
+    { text: "i love you and respect you and appreciate you mahallll", image: "" },
+    { text: "hehehehe", image: "gradpat.jpg" },
+    { text: "first ever meet natin na medyo kabado pa ako pero nawala yung kaba the moment i saw you medyo hiya pa pero normal lang naman yun.", image: "czarmmmmm.jpg" },
+    { text: "diiii ngaaa magkalandiii turing ko sayooooo T_T i loveeee youuuuu mahaalll", image: "" },
+    { text: "I'm always here for youuu mahalll", image: "" },
+    { text: "mwaaaaaaaa", image: "gradpat.jpg" },
+    { text: "i love you mahal hugggggg", image: "1day.jpg" },
+    { text: "Your presence eliminates every doubt that i have mwaaaaaa", image: "czarm.jpg" },
+    { text: "sabi mo na i was one of the reasons behind that smile. so i will continue being the reason why you smile for the rest of your life", image: "gradpiczarm.jpg" },
+    { text: "mahal i will always stay at your side through goodtimes and bad", image: "" },
+    { text: "i loveee you sooo muchh", image: "" },
+    { text: "hehehe first selfie update ni mahal <3", image: "selfieup.jpg" },
+    { text: "you make me soooo happy mahal", image: "373468049_783145310276425_3110022799443798658_n.jpg" },
+    { text: "our first date outside hehehe", image: "370597093_826654748993536_8735515232313349597_n.jpg" },
+    { text: "definition of happiness — spending time with you", image: "370644244_208683625530975_6290488083825812449_n.jpg" },
+    { text: "i'll always remember this moment na inask kita maging girlfriend ko and you said yes — one of the best and happiest memories i have with you so far", image: "371783862_1271044530268008_3534421685126660033_n.jpg" },
+    { text: "i am grateful to have youu mahaalll", image: "372265233_795975165557560_2089930356038643605_n.jpg" },
+    { text: "KISSS MWAAAAA", image: "371093518_1285462962156694_8484029707612655594_n.jpg" },
+    { text: "the only hand that i will hold for the rest of my life mwaaaaaa", image: "370598580_322190526923852_7381969964747089665_n.jpg" },
+    { text: "hehehe bingsuuu with mahal nanginiglo naaaaa tayo jan HAHAHHAHA", image: "370605467_977432416706302_3541406121298249559_n.jpg" },
+    { text: "i will always be yours mahal", image: "371788341_998750001323909_2660369852822287663_n.jpg" },
+    { text: "your fav pic of us hehehe i hope na i can make you smile like this when you are down", image: "371750969_1025122402000735_5721658323396711778_n.jpg" },
+    { text: "i am proud of you mahal", image: "" },
+    { text: "I love you to the moon and back again.", image: "" },
+    { text: "I'd do anything to make you smile like this", image: "370595945_6819800038083624_3218125223078690493_n.jpg" },
+    { text: "I love you with all my heart mahal", image: "" },
+    { text: "mahal thank you for watching over me when i am asleep sorry di kita nasabayan nito ng sleep", image: "sss.jpg" },
+    { text: "First vape purchase na nakihipak din ako HAHAHAHA", image: "IMG_20230822_083138.jpg" },
+    { text: "i love you mahal even with your flaws", image: "" },
+    { text: "", image: "IMG_20230828_034732.jpg" },
+    { text: "Hugggggggg", image: "IMG_20230828_034546.jpg" },
+    { text: "i will always respect your time and your busy days mahal", image: "355209082_806975727398824_3787614844637048095_n.png" },
+    { text: "I will always cherish you mahal", image: "" },
+    { text: "My heart is yours forever mahal", image: "" },
+    { text: "you are my tahanan mahal i love you", image: "" },
+    { text: "I trust and love you mahal with every cell in my body", image: "" },
+    { text: "I look forward to making more fond memories with you mahal", image: "" },
+    { text: "Loving you is one of the best decisions i have ever made mahal", image: "" },
+    { text: "Mahal you are one of the most important people in my life", image: "" },
+    { text: "You are my Pahinga mahal", image: "" },
+    { text: "a wild yaw appears — she makes your sadness go awayyyyyy", image: "Yaw.jpg" },
+    { text: "me drowning in all of the love that you give me", image: "received_273707457608404.jpg" },
+    { text: "out of the 258k members of that subreddit i am glad na ikaw ang nakilala ko and na fall inlove with", image: "" },
+    { text: "A wild oreo appears — your happiness goes up instantly", image: "Screenshot_20230722_033608_com.android.gallery3d.jpg" },
+    { text: "Me training at the gym to fight your sad hours", image: "IMG_20230726_150934.jpg" },
+    { text: "You are Worth it mahal", image: "" },
+    { text: "Staying up all night with you will always be the best puyats ever", image: "" },
+    { text: "I will chase the monsters away for you mahal", image: "" },
+    { text: "remember mahal i am always here for you", image: "" },
+    { text: "I will love you always czarm", image: "" },
+    { text: "Two less lonely people in the world — out of all the people in the world I just can't believe you're mine", image: "" },
+    { text: "I believe in you mahal you are the strongest woman i've met", image: "" },
+    { text: "I will always support you mahal", image: "" },
+    { text: "you are the love of my life mahal", image: "" },
+    { text: "you are my happy pill mahal", image: "" },
+    { text: "i choose you mahal to be the love of my life and i will always choose you without a shadow of a doubt", image: "" },
+    { text: "one of my goals in life is to grow with you kasi di ka pang short term i love you", image: "" },
+    { text: "the feeling you give me isn't replaceable by anyone", image: "" },
+    { text: "mahal i'm not going to say i miss you but — for those who love with heart and soul there is no such thing as separation", image: "" },
+    { text: "mahal you are the best duo ever hehehe mapa valo ml or wildrift", image: "" },
+    { text: "#Roadto12hours", image: "" },
+    { text: "i am always thinking about you mahal", image: "" },
+    { text: "i wish na naging kinder yung mundong ito sayo — maybe that's why i'm here, to bring you happiness and make up for all those traumas. i love you and i promise to be the man that deserves you", image: "" },
+    { text: "Mahal i will always look back at this moment — you were there for me since day one kahit wala pa akong maooffer. you are a major part of my success in life. i love you so much mahal. don't worry okieee lang kung di tuloy ayala mall — there is always next time. 9-9-2023", image: "" }
+  ];
 
+  /* ── State ── */
+  let startAngle = 0;
+  const arc = (2 * Math.PI) / options.length;
+  let spinTimeout = null;
+  let spinAngleStart = 0;
+  let spinTime = 0;
+  let spinTimeTotal = 0;
+  let isSpinning = false;
+  let spinCount = 0;
+  let ctx;
 
+  /* ── Color palette (rich jewel tones) ── */
+  function getColor(i, total) {
+    const hue = (i / total) * 360;
+    const sat = 60 + (i % 3) * 10;
+    const lum = 38 + (i % 2) * 10;
+    return `hsl(${hue}, ${sat}%, ${lum}%)`;
+  }
 
-        ];
-        var startAngle = 0;
-        var arc = Math.PI / (options.length / 2);
-        var spinTimeout = null;
-        var spinArcStart = 10;
-        var spinTime = 0;
-        var spinTimeTotal = 0;
-        var ctx;
-        var currentVisibleOption = null;
-        var selectedOptions = [];
+  /* ── Draw ── */
+  function drawWheel() {
+    const canvas = document.getElementById('canvas');
+    ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 500, 500);
 
+    const cx = 250, cy = 250;
+    const outerR = 240, innerR = 80;
+    const textR = 170;
 
-        document.getElementById("spin").addEventListener("click", spin);
+    for (let i = 0; i < options.length; i++) {
+      const angle = startAngle + i * arc;
 
-        function byte2Hex(n) {
-            var nybHexString = "0123456789ABCDEF";
-            return String(nybHexString.substr((n >> 4) & 0x0F, 1)) + nybHexString.substr(n & 0x0F, 1);
-        }
+      // Slice
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, outerR, angle, angle + arc);
+      ctx.closePath();
+      ctx.fillStyle = getColor(i, options.length);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
 
-        function RGB2Color(r, g, b) {
-            return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
-        }
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, 0, 2 * Math.PI);
+    ctx.strokeStyle = 'rgba(192,132,252,0.4)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
 
-        function getColor(item, maxitem) {
-            var phase = 0;
-            var center = 128;
-            var width = 127;
-            var frequency = Math.PI * 2 / maxitem;
+    // Inner circle (hub)
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, 2 * Math.PI);
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, innerR);
+    grad.addColorStop(0, '#1a0f2e');
+    grad.addColorStop(1, '#0d0a14');
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(192,132,252,0.35)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
-            red = Math.sin(frequency * item + 2 + phase) * width + center;
-            green = Math.sin(frequency * item + 0 + phase) * width + center;
-            blue = Math.sin(frequency * item + 4 + phase) * width + center;
+    // Arrow pointer
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(192,132,252,0.8)';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - outerR - 4);
+    ctx.lineTo(cx - 8, cy - outerR + 16);
+    ctx.lineTo(cx + 8, cy - outerR + 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
 
-            return RGB2Color(red, green, blue);
-        }
+  /* ── Spin logic ── */
+  function spin() {
+    if (isSpinning) return;
+    isSpinning = true;
+    document.getElementById('spin-btn').classList.add('spinning');
+    spinAngleStart = Math.random() * 10 + 10;
+    spinTime = 0;
+    spinTimeTotal = Math.random() * 3000 + 4000;
+    rotateWheel();
+  }
 
-        function drawRouletteWheel() {
-            var canvas = document.getElementById("canvas");
-            if (canvas.getContext) {
-                var outsideRadius = 200;
-                var textRadius = 160;
-                var insideRadius = 125;
+  function rotateWheel() {
+    spinTime += 30;
+    if (spinTime >= spinTimeTotal) {
+      stopRotateWheel();
+      return;
+    }
+    const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+    startAngle += spinAngle * Math.PI / 180;
+    drawWheel();
+    spinTimeout = setTimeout(rotateWheel, 30);
+  }
 
-                ctx = canvas.getContext("2d");
-                ctx.clearRect(0, 0, 500, 500);
+  function stopRotateWheel() {
+    clearTimeout(spinTimeout);
+    isSpinning = false;
+    document.getElementById('spin-btn').classList.remove('spinning');
 
-                ctx.strokeStyle = "black";
-                ctx.lineWidth = 2;
+    const degrees = startAngle * 180 / Math.PI + 90;
+    const arcd = arc * 180 / Math.PI;
+    const index = Math.floor((360 - (degrees % 360)) / arcd) % options.length;
 
-                ctx.font = 'bold 12px Helvetica, Arial';
+    spinCount++;
+    document.getElementById('spin-count').textContent = spinCount;
 
-                for (var i = 0; i < options.length; i++) {
-                    // Check if the option has already been selected
-                    if (selectedOptions.indexOf(options[i]) === -1) {
-                        var angle = startAngle + i * arc;
-                        ctx.fillStyle = getColor(i, options.length);
+    showModal(options[index]);
+  }
 
-                        ctx.beginPath();
-                        ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
-                        ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
-                        ctx.stroke();
-                        ctx.fill();
-                    }
-                }
+  function easeOut(t, b, c, d) {
+    const ts = (t /= d) * t;
+    const tc = ts * t;
+    return b + c * (tc - 3 * ts + 3 * t);
+  }
 
-                // Arrow
-                ctx.fillStyle = "black";
-                ctx.beginPath();
-                ctx.moveTo(250 - 4, 250 - (outsideRadius + 5));
-                ctx.lineTo(250 + 4, 250 - (outsideRadius + 5));
-                ctx.lineTo(250 + 4, 250 - (outsideRadius - 5));
-                ctx.lineTo(250 + 9, 250 - (outsideRadius - 5));
-                ctx.lineTo(250 + 0, 250 - (outsideRadius - 13));
-                ctx.lineTo(250 - 9, 250 - (outsideRadius - 5));
-                ctx.lineTo(250 - 4, 250 - (outsideRadius - 5));
-                ctx.lineTo(250 - 4, 250 - (outsideRadius + 5));
-                ctx.fill();
-            }
-        }
+  /* ── Modal ── */
+  function showModal(opt) {
+    const modal = document.getElementById('modal');
+    const body  = document.getElementById('modal-body');
+    body.innerHTML = '';
 
+    if (opt.image) {
+      const img = document.createElement('img');
+      img.src = opt.image;
+      img.className = 'modal-img';
+      img.alt = 'Memory';
+      body.appendChild(img);
+    }
 
-        function spin() {
-            if (currentVisibleOption) {
-                hideOptionInModal();
-            }
-            spinAngleStart = Math.random() * 10 + 10;
-            spinTime = 0;
-            spinTimeTotal = Math.random() * 3 + 4 * 1000;
-            rotateWheel();
-        }
+    if (opt.text) {
+      const p = document.createElement('p');
+      p.className = 'modal-text';
+      p.textContent = opt.text;
+      body.appendChild(p);
+    }
 
-        function rotateWheel() {
-            spinTime += 30;
-            if (spinTime >= spinTimeTotal) {
-                stopRotateWheel();
-                return;
-            }
-            var spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
-            startAngle += (spinAngle * Math.PI / 180);
-            drawRouletteWheel();
-            spinTimeout = setTimeout(rotateWheel, 30);
-        }
+    modal.classList.add('open');
+  }
 
-        function stopRotateWheel() {
-            clearTimeout(spinTimeout);
-            var degrees = startAngle * 180 / Math.PI + 90;
-            var arcd = arc * 180 / Math.PI;
-            var index = Math.floor((360 - degrees % 360) / arcd);
-            ctx.save();
-            ctx.font = 'bold 30px Helvetica, Arial';
-            var selectedOption = options[index];
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
 
-            // Display the selected option in the modal
-            showOptionInModal(selectedOption);
-            ctx.restore();
-        }
+  /* ── Event listeners ── */
+  document.getElementById('spin-btn').addEventListener('click', spin);
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-spin-again').addEventListener('click', () => { closeModal(); spin(); });
 
-        function easeOut(t, b, c, d) {
-            var ts = (t /= d) * t;
-            var tc = ts * t;
-            return b + c * (tc + -3 * ts + 3 * t);
-        }
+  document.getElementById('modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeModal();
+  });
 
-        function showOptionInModal(selectedOption) {
-            var modal = document.getElementById("myModal");
-            var modalContent = document.getElementById("modal-content-container");
-            modal.style.display = "block";
-            selectedOptions.push(selectedOption);
-            // Clear previous content
-            modalContent.innerHTML = "";
+  document.getElementById('show-btn').addEventListener('click', () => {
+    document.getElementById('message-card').classList.add('visible');
+  });
+  document.getElementById('hide-btn').addEventListener('click', () => {
+    document.getElementById('message-card').classList.remove('visible');
+  });
 
-            // Create and append the content to the modal
-            var optionElement = document.createElement("div");
-            var textElement = document.createElement("p");
-
-            if (selectedOption.image) {
-                // If the option has an image, display it
-                var imageElement = document.createElement("img");
-                imageElement.src = selectedOption.image;
-                modalContent.appendChild(imageElement);
-                textElement.textContent = selectedOption.text;
-            } else {
-                // If there's no image, display only the text
-                textElement.textContent = selectedOption.text;
-            }
-
-            optionElement.appendChild(textElement);
-            modalContent.appendChild(optionElement);
-
-            // Add a close button to the modal
-            var closeButton = document.getElementById("closeModal");
-            closeButton.onclick = function () {
-                modal.style.display = "none";
-            };
-
-            // Store the current visible option
-            currentVisibleOption = selectedOption;
-        }
-
-        function hideOptionInModal() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            currentVisibleOption = null;
-        }
-
-        // Initialize the wheel
-        drawRouletteWheel();
-        // JavaScript code to hide the text container when the button is clicked
-        document.getElementById("hide-button").addEventListener("click", function () {
-            var textContainer = document.getElementById("text-container");
-            textContainer.style.display = "none";
-        });
-        document.getElementById("show-button").addEventListener("click", function () {
-            var textContainer = document.getElementById("text-container");
-            textContainer.style.display = "block";
-        });
-
-    </script>
+  /* ── Init ── */
+  drawWheel();
+</script>
 </body>
-
 </html>

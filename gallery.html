@@ -2,218 +2,760 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Czarm and Pat's Gallery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Czarm & Pat's Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0d0a14;
+      --surface: #160f24;
+      --surface2: #1f1535;
+      --accent: #c084fc;
+      --accent2: #f0abfc;
+      --gold: #fbbf24;
+      --text: #f3e8ff;
+      --text-muted: #a78bca;
+      --border: rgba(192, 132, 252, 0.2);
+      --glow: rgba(192, 132, 252, 0.3);
+      --radius: 14px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 15% 10%, rgba(139, 92, 246, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 85%, rgba(192, 132, 252, 0.12) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      background: rgba(13, 10, 20, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--accent2);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 4px; }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent2);
+      background: rgba(192, 132, 252, 0.1);
+    }
+
+    #nav-check { display: none; }
+
+    .nav-btn {
+      display: none;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .nav-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-muted);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    @media (max-width: 600px) {
+      .nav-btn { display: flex; }
+      .nav-links {
+        position: absolute;
+        top: 56px;
+        left: 0;
+        width: 100%;
+        background: rgba(13, 10, 20, 0.97);
+        flex-direction: column;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links a { padding: 14px 28px; border-radius: 0; }
+      #nav-check:checked ~ .nav-links { max-height: 300px; }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    .hero { text-align: center; margin-bottom: 48px; }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 700;
+      background: linear-gradient(135deg, #f3e8ff 0%, var(--accent2) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .hero-sub { margin-top: 10px; font-size: 14px; color: var(--text-muted); }
+
+    .gallery-grid { columns: 3 280px; column-gap: 16px; }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 40px rgba(192, 132, 252, 0.2), 0 0 0 1px rgba(192, 132, 252, 0.3);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      transition: filter 0.3s ease;
+    }
+
+    .gallery-item:hover img { filter: brightness(1.08); }
+
+    .gallery-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(124, 58, 237, 0.5) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+
+    .gallery-item:hover .overlay { opacity: 1; }
+
+    .overlay-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-left: auto;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.open { opacity: 1; pointer-events: all; }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(14px);
+    }
+
+    .lightbox-box {
+      position: relative;
+      z-index: 1;
+      max-width: min(90vw, 860px);
+      max-height: 90vh;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(192, 132, 252, 0.15);
+      transform: scale(0.94) translateY(12px);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.open .lightbox-box { transform: scale(1) translateY(0); }
+
+    .lightbox-box img {
+      display: block;
+      max-width: 100%;
+      max-height: 86vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .lb-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 48px;
+      height: 48px;
+      background: rgba(13, 10, 20, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(192, 132, 252, 0.35);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      margin: 0 10px;
+    }
+
+    .lb-arrow:hover {
+      background: rgba(192, 132, 252, 0.35);
+      border-color: rgba(192, 132, 252, 0.7);
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .lb-arrow.prev { left: 0; }
+    .lb-arrow.next { right: 0; }
+
+    @media (max-width: 480px) {
+      .lb-arrow { width: 38px; height: 38px; font-size: 18px; margin: 0 4px; }
+    }
+
+    .lb-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 11;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .lb-close:hover { background: rgba(192, 132, 252, 0.4); }
+
+    .lb-counter {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.65);
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+      padding: 3px 12px;
+      border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+    }
+
+    .gallery-count {
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .gallery-count span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 4px 14px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .gallery-item:nth-child(1)  { animation-delay: 0.03s; }
+    .gallery-item:nth-child(2)  { animation-delay: 0.06s; }
+    .gallery-item:nth-child(3)  { animation-delay: 0.09s; }
+    .gallery-item:nth-child(4)  { animation-delay: 0.12s; }
+    .gallery-item:nth-child(5)  { animation-delay: 0.15s; }
+    .gallery-item:nth-child(6)  { animation-delay: 0.18s; }
+    .gallery-item:nth-child(7)  { animation-delay: 0.21s; }
+    .gallery-item:nth-child(8)  { animation-delay: 0.24s; }
+    .gallery-item:nth-child(9)  { animation-delay: 0.27s; }
+    .gallery-item:nth-child(10) { animation-delay: 0.30s; }
+    .gallery-item:nth-child(11) { animation-delay: 0.33s; }
+    .gallery-item:nth-child(12) { animation-delay: 0.36s; }
+    .gallery-item:nth-child(13) { animation-delay: 0.39s; }
+    .gallery-item:nth-child(14) { animation-delay: 0.42s; }
+    .gallery-item:nth-child(15) { animation-delay: 0.45s; }
+    .gallery-item:nth-child(16) { animation-delay: 0.48s; }
+    .gallery-item:nth-child(17) { animation-delay: 0.51s; }
+    .gallery-item:nth-child(18) { animation-delay: 0.54s; }
+    .gallery-item:nth-child(19) { animation-delay: 0.57s; }
+    .gallery-item:nth-child(20) { animation-delay: 0.60s; }
+    .gallery-item:nth-child(21) { animation-delay: 0.63s; }
+    .gallery-item:nth-child(22) { animation-delay: 0.66s; }
+    .gallery-item:nth-child(23) { animation-delay: 0.69s; }
+    .gallery-item:nth-child(24) { animation-delay: 0.72s; }
+    .gallery-item:nth-child(25) { animation-delay: 0.75s; }
+    .gallery-item:nth-child(26) { animation-delay: 0.78s; }
+    .gallery-item:nth-child(27) { animation-delay: 0.81s; }
+    .gallery-item:nth-child(28) { animation-delay: 0.84s; }
+    .gallery-item:nth-child(29) { animation-delay: 0.87s; }
+    .gallery-item:nth-child(30) { animation-delay: 0.90s; }
+    .gallery-item:nth-child(31) { animation-delay: 0.93s; }
+    .gallery-item:nth-child(32) { animation-delay: 0.96s; }
+    .gallery-item:nth-child(33) { animation-delay: 0.99s; }
+    .gallery-item:nth-child(34) { animation-delay: 1.02s; }
+    .gallery-item:nth-child(35) { animation-delay: 1.05s; }
+    .gallery-item:nth-child(36) { animation-delay: 1.08s; }
+  </style>
 </head>
 
 <body>
-  <style>
-    html {
-      box-sizing: border-box;
-    }
 
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: inherit;
-    }
+  <nav>
+    <a class="nav-brand" href="index.html">Mahal ♡</a>
+    <input type="checkbox" id="nav-check" />
+    <label class="nav-btn" for="nav-check">
+      <span></span><span></span><span></span>
+    </label>
+    <div class="nav-links">
+      <a href="index.html">Roulette</a>
+      <a href="gallery.html" class="active">Gallery</a>
+    </div>
+  </nav>
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-    }
+  <div class="page">
 
-    body {
-      background: #333;
-      color: #fff;
-      font-size: 18px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-    }
+    <div class="hero">
+      <div class="hero-eyebrow">✦ Our Memories ✦</div>
+      <h1>Czarm & Pat's Gallery</h1>
+      <p class="hero-sub">Every picture tells our story 💜</p>
+    </div>
 
-    /* Image gallery stlyling */
-    .container {
-      max-width: 900px;
-      margin: 80px auto 0;
-      text-align: center;
-    }
+    <div class="gallery-count">
+      <span>📷 48 memories</span>
+    </div>
 
-    .container__img-holder {
-      max-width: 280px;
-      display: inline-block;
-      vertical-align: top;
-      margin-bottom: 20px;
-      margin-left: 16px;
-      cursor: pointer;
-    }
+    <div class="gallery-grid" id="gallery">
 
-    .container .container__img-holder:nth-child(3n+1) {
-      margin-left: 0;
-    }
+      <div class="gallery-item" data-index="0">
+        <img src="gallery/IMG_20230910_222150.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
 
-    .container__img-holder img {
-      width: 100%;
-      height: 220px;
-      display: block;
-    }
+      <div class="gallery-item" data-index="1">
+        <img src="gallery/IMG_20230910_204909.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="2">
+        <img src="gallery/IMG_20230910_153130.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="3">
+        <img src="gallery/IMG_20230910_222111.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="4">
+        <img src="gallery/IMG_20230831_215517.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="5">
+        <img src="gallery/IMG_20230826_193403.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="6">
+        <img src="gallery/IMG_20230908_200444.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="7">
+        <img src="gallery/IMG_20230828_194059.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="8">
+        <img src="gallery/374948815_639491958251932_98437943980797576_n.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="9">
+        <img src="gallery/IMG_20260104_200402.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="10">
+        <img src="gallery/IMG_20250817_182805.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="11">
+        <img src="gallery/IMG_20250413_030602.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="12">
+        <img src="gallery/IMG_20250329_145035.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="13">
+        <img src="gallery/IMG_20250315_190603.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="14">
+        <img src="gallery/IMG_20250214_014149.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="15">
+        <img src="gallery/IMG_20241225_204112.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="16">
+        <img src="gallery/IMG_20240214_201052.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="17">
+        <img src="gallery/IMG_20241219_150648.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="18">
+        <img src="gallery/IMG_20241116_000909.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="19">
+        <img src="gallery/IMG_20241105_201354.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="20">
+        <img src="gallery/IMG_20240828_175009.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="21">
+        <img src="gallery/IMG_20240810_231614.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="22">
+        <img src="gallery/IMG_20240810_183557.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="23">
+        <img src="gallery/IMG_20240413_174948.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="24">
+        <img src="gallery/IMG_20240413_162655.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="25">
+        <img src="gallery/IMG_20240329_125042.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="26">
+        <img src="gallery/IMG_20240204_225417.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="27">
+        <img src="gallery/IMG_20240110_211223.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="28">
+        <img src="gallery/IMG_20240106_193108.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="29">
+        <img src="gallery/IMG_20240101_192033.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="30">
+        <img src="gallery/IMG_20240101_180238.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="31">
+        <img src="gallery/IMG_20231225_143540.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="32">
+        <img src="gallery/IMG_20231223_204939.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="33">
+        <img src="gallery/IMG_20231207_212421.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="34">
+        <img src="gallery/IMG_20231130_222923.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+      <div class="gallery-item" data-index="35">
+        <img src="gallery/IMG_20231119_202305.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+            <div class="gallery-item" data-index="36">
+        <img src="gallery/IMG_20231010_123614.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+            <div class="gallery-item" data-index="37">
+        <img src="gallery/IMG_20231013_072009.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+             <div class="gallery-item" data-index="38">
+        <img src="gallery/IMG_20231015_132453.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+            <div class="gallery-item" data-index="39">
+        <img src="gallery/IMG_20231015_085139.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+              <div class="gallery-item" data-index="40">
+        <img src="gallery/IMG_20231019_180805.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+                    <div class="gallery-item" data-index="41">
+        <img src="gallery/IMG_20231028_210305.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+                          <div class="gallery-item" data-index="42">
+        <img src="gallery/IMG_20231010_123501.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+                                <div class="gallery-item" data-index="43">
+        <img src="gallery/IMG_20231007_220703.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+                                      <div class="gallery-item" data-index="44">
+        <img src="gallery/IMG_20230924_190341.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+                                           <div class="gallery-item" data-index="45">
+        <img src="gallery/IMG_20230923_070714.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+                                               <div class="gallery-item" data-index="46">
+        <img src="gallery/IMG_20230915_0755504.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+      
+                                               <div class="gallery-item" data-index="47">
+        <img src="gallery/IMG_20230913_175600-COLLAGE.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+
+                                                   <div class="gallery-item" data-index="48">
+        <img src="gallery/IMG_20230910_153132.jpg" alt="Memory" loading="lazy" />
+        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+      </div>
+      
+ 
 
 
-    /* Popup Styling */
-    .img-popup {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      background: rgba(255, 255, 255, .5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      display: none;
-    }
 
-    .img-popup img {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      opacity: 0;
-      transform: translateY(-100px);
-      -webkit-transform: translateY(-100px);
-      -moz-transform: translateY(-100px);
-      -ms-transform: translateY(-100px);
-      -o-transform: translateY(-100px);
-    }
-
-    .close-btn {
-      width: 35px;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      cursor: pointer;
-    }
-
-    .close-btn .bar {
-      height: 4px;
-      background: #333;
-    }
-
-    .close-btn .bar:nth-child(1) {
-      transform: rotate(45deg);
-    }
-
-    .close-btn .bar:nth-child(2) {
-      transform: translateY(-4px) rotate(-45deg);
-    }
-
-    .opened {
-      display: flex;
-    }
-
-    .opened img {
-      animation: animatepopup 1s ease-in-out .8s;
-      -webkit-animation: animatepopup .3s ease-in-out forwards;
-    }
-
-    @keyframes animatepopup {
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-        -webkit-transform: translateY(0);
-        -moz-transform: translateY(0);
-        -ms-transform: translateY(0);
-        -o-transform: translateY(0);
-      }
-
-    }
-
-    @media screen and (max-width: 880px) {
-
-      .container .container__img-holder:nth-child(3n+1) {
-        margin-left: 16px;
-      }
-
-    }
-    
-    
-  </style>
-  <div class="Back">
-    <a href="index.html">Roulette</a>
+    </div>
   </div>
 
-  <div class="container">
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230910_222150.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230910_204909.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230910_153130.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230910_222111.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230831_215517.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230826_193403.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230908_200444.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\IMG_20230828_194059.jpg" alt="Image">
-    </div>
-    <div class="container__img-holder">
-      <img src="gallery\374948815_639491958251932_98437943980797576_n.jpg" alt="Image">
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-backdrop" id="lb-backdrop"></div>
+    <div class="lightbox-box" id="lb-box">
+      <button class="lb-close" id="lb-close" title="Close">✕</button>
+      <button class="lb-arrow prev" id="lb-prev" title="Previous">‹</button>
+      <img src="" alt="Full view" id="lb-img" />
+      <button class="lb-arrow next" id="lb-next" title="Next">›</button>
+      <div class="lb-counter" id="lb-counter">1 / 36</div>
     </div>
   </div>
 
-  <div class="img-popup">
-    <img src="" alt="Popup Image">
-    <div class="close-btn">
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    $(document).ready(function () {
+    const items = Array.from(document.querySelectorAll('.gallery-item'));
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCounter = document.getElementById('lb-counter');
+    let current = 0;
 
-      // required elements
-      var imgPopup = $('.img-popup');
-      var imgCont = $('.container__img-holder');
-      var popupImage = $('.img-popup img');
-      var closeBtn = $('.close-btn');
+    function getSrc(index) {
+      return items[index].querySelector('img').src;
+    }
 
-      // handle events
-      imgCont.on('click', function () {
-        var img_src = $(this).children('img').attr('src');
-        imgPopup.children('img').attr('src', img_src);
-        imgPopup.addClass('opened');
-      });
+    function openLightbox(index) {
+      current = index;
+      lbImg.src = getSrc(current);
+      lbImg.style.opacity = '1';
+      lbImg.style.transform = 'translateX(0)';
+      lbCounter.textContent = `${current + 1} / ${items.length}`;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
 
-      $(imgPopup, closeBtn).on('click', function () {
-        imgPopup.removeClass('opened');
-        imgPopup.children('img').attr('src', '');
-      });
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { lbImg.src = ''; }, 300);
+    }
 
-      popupImage.on('click', function (e) {
-        e.stopPropagation();
-      });
+    function navigate(dir) {
+      current = (current + dir + items.length) % items.length;
+      lbImg.style.transition = 'none';
+      lbImg.style.opacity = '0';
+      lbImg.style.transform = `translateX(${dir > 0 ? '30px' : '-30px'})`;
+      setTimeout(() => {
+        lbImg.src = getSrc(current);
+        lbCounter.textContent = `${current + 1} / ${items.length}`;
+        lbImg.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        lbImg.style.opacity = '1';
+        lbImg.style.transform = 'translateX(0)';
+      }, 150);
+    }
 
+    items.forEach((item, i) => {
+      item.addEventListener('click', () => openLightbox(i));
+    });
+
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('lb-backdrop').addEventListener('click', closeLightbox);
+    document.getElementById('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
+    document.getElementById('lb-next').addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') navigate(1);
+      if (e.key === 'ArrowLeft') navigate(-1);
+    });
+
+    let touchStartX = 0;
+    document.getElementById('lb-box').addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    document.getElementById('lb-box').addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) navigate(diff > 0 ? 1 : -1);
     });
   </script>
 </body>

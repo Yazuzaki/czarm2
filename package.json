@@ -1,0 +1,12 @@
+{
+  "name": "czarm-wheel-test",
+  "version": "1.0.0",
+  "description": "Small visual test harness for Czarm's Wheel of Happiness",
+  "private": true,
+  "scripts": {
+    "test:visual": "node test/run_visual_test.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}
