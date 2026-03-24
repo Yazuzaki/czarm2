@@ -5,8 +5,5 @@
   "private": true,
   "scripts": {
     "test:visual": "node test/run_visual_test.js"
-  },
-  "devDependencies": {
-    "puppeteer": "^21.0.0"
   }
 }
