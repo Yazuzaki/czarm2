@@ -25,13 +25,16 @@
       --radius: 14px;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       min-height: 100%;
     }
@@ -79,7 +82,10 @@
       text-decoration: none;
     }
 
-    .nav-links { display: flex; gap: 4px; }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+    }
 
     .nav-links a {
       color: var(--text-muted);
@@ -91,12 +97,15 @@
       transition: color 0.2s, background 0.2s;
     }
 
-    .nav-links a:hover, .nav-links a.active {
+    .nav-links a:hover,
+    .nav-links a.active {
       color: var(--accent2);
       background: rgba(192, 132, 252, 0.1);
     }
 
-    #nav-check { display: none; }
+    #nav-check {
+      display: none;
+    }
 
     .nav-btn {
       display: none;
@@ -116,7 +125,10 @@
     }
 
     @media (max-width: 600px) {
-      .nav-btn { display: flex; }
+      .nav-btn {
+        display: flex;
+      }
+
       .nav-links {
         position: absolute;
         top: 56px;
@@ -130,8 +142,15 @@
         transition: max-height 0.3s ease;
         border-bottom: 1px solid var(--border);
       }
-      .nav-links a { padding: 14px 28px; border-radius: 0; }
-      #nav-check:checked ~ .nav-links { max-height: 300px; }
+
+      .nav-links a {
+        padding: 14px 28px;
+        border-radius: 0;
+      }
+
+      #nav-check:checked~.nav-links {
+        max-height: 300px;
+      }
     }
 
     .page {
@@ -142,7 +161,10 @@
       padding: 48px 24px 72px;
     }
 
-    .hero { text-align: center; margin-bottom: 48px; }
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
 
     .hero-eyebrow {
       font-size: 12px;
@@ -164,9 +186,16 @@
       line-height: 1.2;
     }
 
-    .hero-sub { margin-top: 10px; font-size: 14px; color: var(--text-muted); }
+    .hero-sub {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
 
-    .gallery-grid { columns: 3 280px; column-gap: 16px; }
+    .gallery-grid {
+      columns: 3 280px;
+      column-gap: 16px;
+    }
 
     .gallery-item {
       break-inside: avoid;
@@ -194,7 +223,9 @@
       transition: filter 0.3s ease;
     }
 
-    .gallery-item:hover img { filter: brightness(1.08); }
+    .gallery-item:hover img {
+      filter: brightness(1.08);
+    }
 
     .gallery-item .overlay {
       position: absolute;
@@ -207,7 +238,9 @@
       padding: 16px;
     }
 
-    .gallery-item:hover .overlay { opacity: 1; }
+    .gallery-item:hover .overlay {
+      opacity: 1;
+    }
 
     .overlay-icon {
       width: 36px;
@@ -236,7 +269,10 @@
       transition: opacity 0.3s ease;
     }
 
-    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
 
     .lightbox-backdrop {
       position: absolute;
@@ -261,7 +297,9 @@
       justify-content: center;
     }
 
-    .lightbox.open .lightbox-box { transform: scale(1) translateY(0); }
+    .lightbox.open .lightbox-box {
+      transform: scale(1) translateY(0);
+    }
 
     .lightbox-box img {
       display: block;
@@ -302,11 +340,21 @@
       transform: translateY(-50%) scale(1.08);
     }
 
-    .lb-arrow.prev { left: 0; }
-    .lb-arrow.next { right: 0; }
+    .lb-arrow.prev {
+      left: 0;
+    }
+
+    .lb-arrow.next {
+      right: 0;
+    }
 
     @media (max-width: 480px) {
-      .lb-arrow { width: 38px; height: 38px; font-size: 18px; margin: 0 4px; }
+      .lb-arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+        margin: 0 4px;
+      }
     }
 
     .lb-close {
@@ -328,7 +376,9 @@
       transition: background 0.2s;
     }
 
-    .lb-close:hover { background: rgba(192, 132, 252, 0.4); }
+    .lb-close:hover {
+      background: rgba(192, 132, 252, 0.4);
+    }
 
     .lb-counter {
       position: absolute;
@@ -365,46 +415,160 @@
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .gallery-item:nth-child(1)  { animation-delay: 0.03s; }
-    .gallery-item:nth-child(2)  { animation-delay: 0.06s; }
-    .gallery-item:nth-child(3)  { animation-delay: 0.09s; }
-    .gallery-item:nth-child(4)  { animation-delay: 0.12s; }
-    .gallery-item:nth-child(5)  { animation-delay: 0.15s; }
-    .gallery-item:nth-child(6)  { animation-delay: 0.18s; }
-    .gallery-item:nth-child(7)  { animation-delay: 0.21s; }
-    .gallery-item:nth-child(8)  { animation-delay: 0.24s; }
-    .gallery-item:nth-child(9)  { animation-delay: 0.27s; }
-    .gallery-item:nth-child(10) { animation-delay: 0.30s; }
-    .gallery-item:nth-child(11) { animation-delay: 0.33s; }
-    .gallery-item:nth-child(12) { animation-delay: 0.36s; }
-    .gallery-item:nth-child(13) { animation-delay: 0.39s; }
-    .gallery-item:nth-child(14) { animation-delay: 0.42s; }
-    .gallery-item:nth-child(15) { animation-delay: 0.45s; }
-    .gallery-item:nth-child(16) { animation-delay: 0.48s; }
-    .gallery-item:nth-child(17) { animation-delay: 0.51s; }
-    .gallery-item:nth-child(18) { animation-delay: 0.54s; }
-    .gallery-item:nth-child(19) { animation-delay: 0.57s; }
-    .gallery-item:nth-child(20) { animation-delay: 0.60s; }
-    .gallery-item:nth-child(21) { animation-delay: 0.63s; }
-    .gallery-item:nth-child(22) { animation-delay: 0.66s; }
-    .gallery-item:nth-child(23) { animation-delay: 0.69s; }
-    .gallery-item:nth-child(24) { animation-delay: 0.72s; }
-    .gallery-item:nth-child(25) { animation-delay: 0.75s; }
-    .gallery-item:nth-child(26) { animation-delay: 0.78s; }
-    .gallery-item:nth-child(27) { animation-delay: 0.81s; }
-    .gallery-item:nth-child(28) { animation-delay: 0.84s; }
-    .gallery-item:nth-child(29) { animation-delay: 0.87s; }
-    .gallery-item:nth-child(30) { animation-delay: 0.90s; }
-    .gallery-item:nth-child(31) { animation-delay: 0.93s; }
-    .gallery-item:nth-child(32) { animation-delay: 0.96s; }
-    .gallery-item:nth-child(33) { animation-delay: 0.99s; }
-    .gallery-item:nth-child(34) { animation-delay: 1.02s; }
-    .gallery-item:nth-child(35) { animation-delay: 1.05s; }
-    .gallery-item:nth-child(36) { animation-delay: 1.08s; }
+    .gallery-item:nth-child(1) {
+      animation-delay: 0.03s;
+    }
+
+    .gallery-item:nth-child(2) {
+      animation-delay: 0.06s;
+    }
+
+    .gallery-item:nth-child(3) {
+      animation-delay: 0.09s;
+    }
+
+    .gallery-item:nth-child(4) {
+      animation-delay: 0.12s;
+    }
+
+    .gallery-item:nth-child(5) {
+      animation-delay: 0.15s;
+    }
+
+    .gallery-item:nth-child(6) {
+      animation-delay: 0.18s;
+    }
+
+    .gallery-item:nth-child(7) {
+      animation-delay: 0.21s;
+    }
+
+    .gallery-item:nth-child(8) {
+      animation-delay: 0.24s;
+    }
+
+    .gallery-item:nth-child(9) {
+      animation-delay: 0.27s;
+    }
+
+    .gallery-item:nth-child(10) {
+      animation-delay: 0.30s;
+    }
+
+    .gallery-item:nth-child(11) {
+      animation-delay: 0.33s;
+    }
+
+    .gallery-item:nth-child(12) {
+      animation-delay: 0.36s;
+    }
+
+    .gallery-item:nth-child(13) {
+      animation-delay: 0.39s;
+    }
+
+    .gallery-item:nth-child(14) {
+      animation-delay: 0.42s;
+    }
+
+    .gallery-item:nth-child(15) {
+      animation-delay: 0.45s;
+    }
+
+    .gallery-item:nth-child(16) {
+      animation-delay: 0.48s;
+    }
+
+    .gallery-item:nth-child(17) {
+      animation-delay: 0.51s;
+    }
+
+    .gallery-item:nth-child(18) {
+      animation-delay: 0.54s;
+    }
+
+    .gallery-item:nth-child(19) {
+      animation-delay: 0.57s;
+    }
+
+    .gallery-item:nth-child(20) {
+      animation-delay: 0.60s;
+    }
+
+    .gallery-item:nth-child(21) {
+      animation-delay: 0.63s;
+    }
+
+    .gallery-item:nth-child(22) {
+      animation-delay: 0.66s;
+    }
+
+    .gallery-item:nth-child(23) {
+      animation-delay: 0.69s;
+    }
+
+    .gallery-item:nth-child(24) {
+      animation-delay: 0.72s;
+    }
+
+    .gallery-item:nth-child(25) {
+      animation-delay: 0.75s;
+    }
+
+    .gallery-item:nth-child(26) {
+      animation-delay: 0.78s;
+    }
+
+    .gallery-item:nth-child(27) {
+      animation-delay: 0.81s;
+    }
+
+    .gallery-item:nth-child(28) {
+      animation-delay: 0.84s;
+    }
+
+    .gallery-item:nth-child(29) {
+      animation-delay: 0.87s;
+    }
+
+    .gallery-item:nth-child(30) {
+      animation-delay: 0.90s;
+    }
+
+    .gallery-item:nth-child(31) {
+      animation-delay: 0.93s;
+    }
+
+    .gallery-item:nth-child(32) {
+      animation-delay: 0.96s;
+    }
+
+    .gallery-item:nth-child(33) {
+      animation-delay: 0.99s;
+    }
+
+    .gallery-item:nth-child(34) {
+      animation-delay: 1.02s;
+    }
+
+    .gallery-item:nth-child(35) {
+      animation-delay: 1.05s;
+    }
+
+    .gallery-item:nth-child(36) {
+      animation-delay: 1.08s;
+    }
   </style>
 </head>
 
@@ -431,249 +595,341 @@
     </div>
 
     <div class="gallery-count">
-      <span>📷 48 memories</span>
+      <span>📷 47 memories</span>
     </div>
 
     <div class="gallery-grid" id="gallery">
 
       <div class="gallery-item" data-index="0">
         <img src="gallery/IMG_20230910_222150.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="1">
         <img src="gallery/IMG_20230910_204909.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="2">
         <img src="gallery/IMG_20230910_153130.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="3">
         <img src="gallery/IMG_20230910_222111.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="4">
         <img src="gallery/IMG_20230831_215517.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="5">
         <img src="gallery/IMG_20230826_193403.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="6">
         <img src="gallery/IMG_20230908_200444.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="7">
         <img src="gallery/IMG_20230828_194059.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="8">
         <img src="gallery/374948815_639491958251932_98437943980797576_n.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="9">
         <img src="gallery/IMG_20260104_200402.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="10">
         <img src="gallery/IMG_20250817_182805.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="11">
         <img src="gallery/IMG_20250413_030602.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="12">
         <img src="gallery/IMG_20250329_145035.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="13">
         <img src="gallery/IMG_20250315_190603.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="14">
         <img src="gallery/IMG_20250214_014149.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="15">
         <img src="gallery/IMG_20241225_204112.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="16">
         <img src="gallery/IMG_20240214_201052.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="17">
         <img src="gallery/IMG_20241219_150648.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="18">
         <img src="gallery/IMG_20241116_000909.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="19">
         <img src="gallery/IMG_20241105_201354.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="20">
         <img src="gallery/IMG_20240828_175009.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="21">
         <img src="gallery/IMG_20240810_231614.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="22">
         <img src="gallery/IMG_20240810_183557.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="23">
         <img src="gallery/IMG_20240413_174948.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="24">
         <img src="gallery/IMG_20240413_162655.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="25">
         <img src="gallery/IMG_20240329_125042.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="26">
         <img src="gallery/IMG_20240204_225417.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="27">
         <img src="gallery/IMG_20240110_211223.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="28">
         <img src="gallery/IMG_20240106_193108.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="29">
         <img src="gallery/IMG_20240101_192033.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="30">
         <img src="gallery/IMG_20240101_180238.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="31">
         <img src="gallery/IMG_20231225_143540.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="32">
         <img src="gallery/IMG_20231223_204939.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="33">
         <img src="gallery/IMG_20231207_212421.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="34">
         <img src="gallery/IMG_20231130_222923.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
       <div class="gallery-item" data-index="35">
         <img src="gallery/IMG_20231119_202305.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-            <div class="gallery-item" data-index="36">
+      <div class="gallery-item" data-index="36">
         <img src="gallery/IMG_20231010_123614.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-            <div class="gallery-item" data-index="37">
+      <div class="gallery-item" data-index="37">
         <img src="gallery/IMG_20231013_072009.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-             <div class="gallery-item" data-index="38">
+      <div class="gallery-item" data-index="38">
         <img src="gallery/IMG_20231015_132453.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-            <div class="gallery-item" data-index="39">
+      <div class="gallery-item" data-index="39">
         <img src="gallery/IMG_20231015_085139.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-              <div class="gallery-item" data-index="40">
+      <div class="gallery-item" data-index="40">
         <img src="gallery/IMG_20231019_180805.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-                    <div class="gallery-item" data-index="41">
+      <div class="gallery-item" data-index="41">
         <img src="gallery/IMG_20231028_210305.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-                          <div class="gallery-item" data-index="42">
+      <div class="gallery-item" data-index="42">
         <img src="gallery/IMG_20231010_123501.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-                                <div class="gallery-item" data-index="43">
+      <div class="gallery-item" data-index="43">
         <img src="gallery/IMG_20231007_220703.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
-                                      <div class="gallery-item" data-index="44">
+      <div class="gallery-item" data-index="44">
         <img src="gallery/IMG_20230924_190341.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
-                                           <div class="gallery-item" data-index="45">
+      <div class="gallery-item" data-index="45">
         <img src="gallery/IMG_20230923_070714.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
-                                               <div class="gallery-item" data-index="46">
-        <img src="gallery/IMG_20230915_0755504.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
-      </div>
-      
-                                               <div class="gallery-item" data-index="47">
+
+      <div class="gallery-item" data-index="46">
         <img src="gallery/IMG_20230913_175600-COLLAGE.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
 
-                                                   <div class="gallery-item" data-index="48">
+      <div class="gallery-item" data-index="47">
         <img src="gallery/IMG_20230910_153132.jpg" alt="Memory" loading="lazy" />
-        <div class="overlay"><div class="overlay-icon">🔍</div></div>
+        <div class="overlay">
+          <div class="overlay-icon">🔍</div>
+        </div>
       </div>
-      
- 
+
+
 
 
 
